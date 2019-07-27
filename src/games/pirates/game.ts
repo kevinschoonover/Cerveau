@@ -10,22 +10,10 @@ import { Unit } from "./unit";
 
 // <<-- Creer-Merge: imports -->>
 
-import { arrayHasElements, Mutable } from "~/utils";
+import { arrayHasElements, ensureMutable } from "~/utils";
 import * as BallGens from "./game-ball-gen";
 // Generate some meta-balls for the islands
 const ballGens = Object.values(BallGens);
-
-// players and tiles are pre-generated in the base constructor, but we'll
-// need to mutate some of their properties in our constructor.
-// However this will occur before clients get it so it will _appear_ constant
-// to them, so it's all good.
-// This is basically the only place forcing mutations is safe however.
-
-/** A Player that can be changed before the game starts. */
-type MutablePlayer = Mutable<Player>;
-
-/** A Tile that can be changed before the game starts. */
-type MutableTile = Mutable<Tile>;
 
 // <<-- /Creer-Merge: imports -->>
 
@@ -252,14 +240,14 @@ export class PiratesGame extends BaseClasses.Game {
 
             // Remove any current ports
             for (const p of this.ports) {
-                (p.tile as MutableTile).port = undefined;
+                ensureMutable(p.tile).port = undefined as any; // TODO: better type
             }
 
             this.ports.length = 0;
 
             // Fill the map
             for (const tile of this.tiles) {
-                (tile as MutableTile).type = "water";
+                ensureMutable(tile).type = "water";
             }
 
             // Pick a meta-ball generator
@@ -273,7 +261,7 @@ export class PiratesGame extends BaseClasses.Game {
             // Generate the islands from the meta-balls
             for (let x = 0; x < this.mapWidth / 2; x++) {
                 for (let y = 0; y < this.mapHeight; y++) {
-                    const tile = this.getTile(x, y) as MutableTile;
+                    const tile = ensureMutable(this.getTile(x, y));
                     let energy = 0;
                     for (const ball of ballInfo.balls) {
                         const r = ball.r;
@@ -372,8 +360,8 @@ export class PiratesGame extends BaseClasses.Game {
                 gold: this.shipCost,
             });
 
-            (port.tile as MutableTile).port = port;
-            (port.owner as MutablePlayer).port = port;
+            ensureMutable(port.tile).port = port;
+            ensureMutable(port.owner).port = port;
             this.ports.push(port);
 
             // Find merchant port locations
@@ -392,7 +380,7 @@ export class PiratesGame extends BaseClasses.Game {
             });
 
             // Add the port to the game
-            (merchantTile as MutableTile).port = merchantPort;
+            ensureMutable(merchantTile).port = merchantPort;
             this.ports.push(merchantPort);
         }
 
@@ -407,7 +395,7 @@ export class PiratesGame extends BaseClasses.Game {
                 }
 
                 // Copy tile data
-                (target as MutableTile).type = orig.type;
+                ensureMutable(target).type = orig.type;
                 target.decoration = orig.decoration;
 
                 // Clone ports
@@ -417,11 +405,11 @@ export class PiratesGame extends BaseClasses.Game {
                         owner: orig.port.owner && orig.port.owner.opponent,
                         gold: orig.port.gold,
                     });
-                    (target as MutableTile).port = port;
+                    ensureMutable(target).port = port;
                     this.ports.push(port);
 
                     if (port.owner) {
-                        (port.owner as MutablePlayer).port = port;
+                        ensureMutable(port.owner).port = port;
                     }
                     else {
                         // Stagger merchant ship spawning
@@ -491,7 +479,7 @@ export class PiratesGame extends BaseClasses.Game {
         // Fill the rest of the bodies
         for (const body of bodies) {
             for (const tile of body) {
-                (tile as MutableTile).type = "land";
+                ensureMutable(tile).type = "land";
                 tile.decoration = false;
             }
         }

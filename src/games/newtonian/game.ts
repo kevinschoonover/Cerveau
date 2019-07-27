@@ -10,7 +10,7 @@ import { Tile } from "./tile";
 import { Unit } from "./unit";
 
 // <<-- Creer-Merge: imports -->>
-import { IPoint, Mutable } from "~/utils";
+import { IPoint, Writeable } from "~/utils";
 
 /** interface used to create rooms.s */
 interface IRoom {
@@ -261,13 +261,13 @@ export class NewtonianGame extends BaseClasses.Game {
          * @param y - The y coordinate. If off map throws an Error.
          * @returns A Tile that is mutable JUST for this function scope.
          */
-        const getMutableTile = (x: number, y: number): Mutable<Tile> => {
+        const getMutableTile = (x: number, y: number): Writeable<Tile> => {
             const tile = this.getTile(x, y);
             if (!tile) {
                 throw new Error(`Cannot get a tile for map generation at (${x}, ${y})`);
             }
 
-            return tile;
+            return tile as any;
         };
 
         // marks where the spawn area ends and the rooms begin.
@@ -548,7 +548,7 @@ export class NewtonianGame extends BaseClasses.Game {
      * @returns - nothing, calls the next stage
      */
     private roomCalc(x1: number, x2: number, y1: number, y2: number,
-                     getMutableTile: (x: number, y: number) => Mutable<Tile>,
+                     getMutableTile: (x: number, y: number) => Writeable<Tile>,
                      DNorth: boolean = false, DEast: boolean = false,
                      DSouth: boolean = false, DWest: boolean = false,
                      machines: number = 0): void {
@@ -717,7 +717,7 @@ export class NewtonianGame extends BaseClasses.Game {
      * @param getMutableTile - A function that gets a mutable tile given an (x, y)
      */
     private roomFill(map: IRoom[][], machines: number,
-                     getMutableTile: (x: number, y: number) => Mutable<Tile>): void {
+                     getMutableTile: (x: number, y: number) => Writeable<Tile>): void {
         // tracks every room in the map list that is unconnected.
         const unconnected: IPoint[] = [];
         // master list of random rooms in a easy to grab fashion.
@@ -1139,7 +1139,7 @@ export class NewtonianGame extends BaseClasses.Game {
      * @param map - a 2D array of rooms for it to draw using.
      * @param getMutableTile - the function for it to grab tiles.
      */
-    private draw(map: IRoom[][], getMutableTile: (x: number, y: number) => Mutable<Tile>): void {
+    private draw(map: IRoom[][], getMutableTile: (x: number, y: number) => Writeable<Tile>): void {
         // Test code to help visualize where it actually places rooms.
         /*for (const x of map) {
             for (const y of x) {
@@ -1530,7 +1530,7 @@ export class NewtonianGame extends BaseClasses.Game {
      * @returns nothing.
      */
     private drawCorner(x: number, y: number, dir1: boolean, dir2: boolean,
-                       getMutableTile: (x: number, y: number) => Mutable<Tile>): void {
+                       getMutableTile: (x: number, y: number) => Writeable<Tile>): void {
         if (dir1 === true || dir2 === true) {
             getMutableTile(x, y).isWall = true;
         }
@@ -1544,7 +1544,7 @@ export class NewtonianGame extends BaseClasses.Game {
      * @param getMutableTile - the function for it to grab tiles.
      * @returns nothing.
      */
-    private drawWall(x: number, y: number, getMutableTile: (x: number, y: number) => Mutable<Tile>): void {
+    private drawWall(x: number, y: number, getMutableTile: (x: number, y: number) => Writeable<Tile>): void {
         if (getMutableTile(x, y).decoration !== 1) {
             getMutableTile(x, y).isWall = true;
         }
@@ -1560,7 +1560,7 @@ export class NewtonianGame extends BaseClasses.Game {
      * @returns nothing.
      */
     private drawDoor(x: number, y: number, d: number = 1,
-                     getMutableTile: (x: number, y: number) => Mutable<Tile>): void {
+                     getMutableTile: (x: number, y: number) => Writeable<Tile>): void {
         getMutableTile(x, y).isWall = false;
         getMutableTile(x, y).decoration = d;
     }

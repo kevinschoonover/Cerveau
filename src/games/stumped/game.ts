@@ -11,13 +11,8 @@ import { Tile } from "./tile";
 
 // <<-- Creer-Merge: imports -->>
 
-import { Mutable } from "~/utils";
+import { ensureMutable } from "~/utils";
 import { jobStats } from "./job-stats";
-
-/**
- * A tile that can be mutated. Should only be used during game initialization.
- */
-type MutableTile = Mutable<Tile>;
 
 // <<-- /Creer-Merge: imports -->>
 
@@ -234,7 +229,7 @@ export class StumpedGame extends BaseClasses.Game {
             }
 
             if (energy > threshold) {
-                (tile as MutableTile).type = "water";
+                ensureMutable(tile).type = "water";
             }
         }
 
@@ -312,7 +307,7 @@ export class StumpedGame extends BaseClasses.Game {
                     // Verify the current tile exists
                     if (realX >= 0 && realY >= 0 && realX < this.mapWidth && realY < this.mapHeight / 2) {
                         // Set tile to water
-                        const tile = this.getTile(realX, realY) as MutableTile;
+                        const tile = ensureMutable(this.getTile(realX, realY));
 
                         // Don't go diagonal
                         if (realX !== nextX && realY !== nextY) {
@@ -376,7 +371,7 @@ export class StumpedGame extends BaseClasses.Game {
 
         /* Mirror map */
         for (const orig of this.tiles) {
-            const target = this.getTile(orig.x, this.mapHeight - orig.y - 1) as MutableTile;
+            const target = ensureMutable(this.getTile(orig.x, this.mapHeight - orig.y - 1));
 
             // Copy data
             target.type = orig.type;

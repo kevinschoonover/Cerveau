@@ -68,7 +68,12 @@ export class TCPClient extends BaseClient {
             super.sendRaw(str);
 
             if (!this.hasDisconnected() && this.socket) {
-                this.socket.write(str + EOT_CHAR, resolve);
+                this.socket.write(str + EOT_CHAR, (err: unknown) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve();
+                });
             }
             else {
                 resolve();

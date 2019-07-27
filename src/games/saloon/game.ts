@@ -12,10 +12,7 @@ import { Tile } from "./tile";
 // <<-- Creer-Merge: imports -->>
 
 import * as gaussian from "gaussian";
-import { Mutable } from "~/utils";
-
-/** A player that can mutate before the game starts */
-type MutablePlayer = Mutable<Player>;
+import { ensureMutable } from "~/utils";
 
 // <<-- /Creer-Merge: imports -->>
 
@@ -297,7 +294,7 @@ export class SaloonGame extends BaseClasses.Game {
                 throw new Error("Could not find tiles to place YoungGun on!");
             }
 
-            (player as MutablePlayer).youngGun = this.manager.create.youngGun({
+            ensureMutable(player).youngGun = this.manager.create.youngGun({
                 owner: player,
                 tile,
                 canCallIn: true,

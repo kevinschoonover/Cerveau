@@ -7,7 +7,7 @@ imports['~/core/game'] = [ 'IBaseGameRequiredData' if obj_key == 'Game' else 'IB
 i_base_player = 'IBase{}Player'.format(game_name)
 
 if 'TiledGame' in game['serverParentClasses'] and obj_key == 'Tile':
-    imports['~/core/game/mixins/tiled'] = [ 'BaseTile' ]
+    imports['~/core/game/mixins/tiled'] = [ 'BaseTile', 'TileDirection' ]
 
 if obj_key == 'Game':
     imports['./game-settings'] = [ game_name + 'GameSettingsManager' ]
@@ -265,8 +265,7 @@ ${merge('        // ', function_name, """
     public getAdjacentDirection(
         adjacentTile: Tile | undefined,
     ): "North" | "South" | "East" | "West" | undefined {
-        // tslint:disable-next-line:no-unsafe-any
-        return BaseTile.prototype.getAdjacentDirection.call(this, adjacentTile);
+        return BaseTile.prototype.getAdjacentDirection.call(this, adjacentTile) as TileDirection | undefined;
     }
 
     /**
@@ -275,8 +274,7 @@ ${merge('        // ', function_name, """
      * @returns An array of all adjacent tiles. Should be between 2 to 4 tiles.
      */
     public getNeighbors(): Tile[] {
-        // tslint:disable-next-line:no-unsafe-any
-        return BaseTile.prototype.getNeighbors.call(this);
+        return BaseTile.prototype.getNeighbors.call(this) as Tile[];
     }
 
     public getNeighbor(direction: "North" | "South" | "East" | "West"): Tile;
@@ -290,8 +288,7 @@ ${merge('        // ', function_name, """
      * @returns The Tile in that direction, or undefined if there is none.
      */
     public getNeighbor(direction: string): Tile | undefined {
-        // tslint:disable-next-line:no-unsafe-any
-        return BaseTile.prototype.getNeighbor.call(this, direction);
+        return BaseTile.prototype.getNeighbor.call(this, direction as TileDirection) as Tile | undefined;
     }
 
     /**

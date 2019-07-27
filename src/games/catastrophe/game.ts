@@ -10,12 +10,10 @@ import { Tile } from "./tile";
 import { Unit } from "./unit";
 
 // <<-- Creer-Merge: imports -->>
-import { arrayHasElements, Mutable, removeElements } from "~/utils";
+import { arrayHasElements, ensureMutable, removeElements } from "~/utils";
 import { jobStats } from "./jobs-stats";
 import { StructureType } from "./structure";
 
-/** A player that we can mutate before the game begins */
-type MutablePlayer = Mutable<Player>;
 // <<-- /Creer-Merge: imports -->>
 
 /**
@@ -381,7 +379,7 @@ export class CatastropheGame extends BaseClasses.Game {
         });
 
         // Cat
-        (this.players[0] as MutablePlayer).cat = selected.unit = this.manager.create.unit({
+        ensureMutable(this.players[0]).cat = selected.unit = this.manager.create.unit({
             owner: this.players[0],
             tile: selected,
             job: this.jobs.find((j) => j.title === "cat overlord"),
@@ -463,7 +461,7 @@ export class CatastropheGame extends BaseClasses.Game {
                     });
 
                     if (target.unit.job.title === "cat overlord") {
-                        (target.unit.owner as MutablePlayer).cat = target.unit;
+                        ensureMutable(target.unit.owner).cat = target.unit;
                     }
                 }
             }

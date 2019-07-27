@@ -12,8 +12,7 @@ import * as Base from "./base";
 export type TileDirection = "North" | "East" | "South" | "West";
 
 /** The valid direction strings tile based games use. */
-const TILE_DIRECTIONS: [ "North", "South", "East", "West" ] =
-                       [ "North", "South", "East", "West" ];
+export const TILE_DIRECTIONS = [ "North", "South", "East", "West" ] as const;
 
 /** A player in a tile based game. */
 export interface ITiledPlayer extends BasePlayer {}

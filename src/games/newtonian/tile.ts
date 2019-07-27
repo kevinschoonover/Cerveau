@@ -1,5 +1,5 @@
 import { IBaseGameObjectRequiredData } from "~/core/game";
-import { BaseTile } from "~/core/game/mixins/tiled";
+import { BaseTile, TileDirection } from "~/core/game/mixins/tiled";
 import { ITileProperties } from "./";
 import { GameObject } from "./game-object";
 import { Machine } from "./machine";
@@ -163,8 +163,7 @@ export class Tile extends GameObject implements BaseTile {
     public getAdjacentDirection(
         adjacentTile: Tile | undefined,
     ): "North" | "South" | "East" | "West" | undefined {
-        // tslint:disable-next-line:no-unsafe-any
-        return BaseTile.prototype.getAdjacentDirection.call(this, adjacentTile);
+        return BaseTile.prototype.getAdjacentDirection.call(this, adjacentTile) as TileDirection | undefined;
     }
 
     /**
@@ -173,8 +172,7 @@ export class Tile extends GameObject implements BaseTile {
      * @returns An array of all adjacent tiles. Should be between 2 to 4 tiles.
      */
     public getNeighbors(): Tile[] {
-        // tslint:disable-next-line:no-unsafe-any
-        return BaseTile.prototype.getNeighbors.call(this);
+        return BaseTile.prototype.getNeighbors.call(this) as Tile[];
     }
 
     public getNeighbor(direction: "North" | "South" | "East" | "West"): Tile;
@@ -188,8 +186,7 @@ export class Tile extends GameObject implements BaseTile {
      * @returns The Tile in that direction, or undefined if there is none.
      */
     public getNeighbor(direction: string): Tile | undefined {
-        // tslint:disable-next-line:no-unsafe-any
-        return BaseTile.prototype.getNeighbor.call(this, direction);
+        return BaseTile.prototype.getNeighbor.call(this, direction as TileDirection) as Tile | undefined;
     }
 
     /**
